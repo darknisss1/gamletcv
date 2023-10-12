@@ -24,5 +24,12 @@ namespace GamletCV
         {
             InitializeComponent();
         }
+        
+        
+        private void ButtonHelloWorldClick(object sender, RoutedEventArgs e)
+        {
+            var a = 123;
+            // do something
+        }
     }
 }

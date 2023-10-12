@@ -6,6 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="AForge" Version="2.2.5" />
+      <PackageReference Include="AForge.Controls" Version="2.2.5" />
+      <PackageReference Include="AForge.Imaging" Version="2.2.5" />
+      <PackageReference Include="AForge.Math" Version="2.2.5" />
+      <PackageReference Include="AForge.Video" Version="2.2.5" />
+      <PackageReference Include="AForge.Video.DirectShow" Version="2.2.5" />
       <PackageReference Include="Emgu.CV" Version="4.8.0.5324" />
     </ItemGroup>
 

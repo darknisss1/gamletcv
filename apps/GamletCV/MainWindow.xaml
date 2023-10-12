@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GamletCV"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+    <StackPanel HorizontalAlignment="Left">
+        <Button Click="ButtonHelloWorldClick">HelloWorld</Button>
+    </StackPanel>
 </Window>

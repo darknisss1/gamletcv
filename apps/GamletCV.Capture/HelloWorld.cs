@@ -17,7 +17,7 @@ public class HelloWorld
         CvInvoke.PutText(
             img, 
             "Hello, world", 
-            new System.Drawing.Point(10, 80), 
+            new Point(10, 80), 
             FontFace.HersheyComplex, 
             1.0, 
             new Bgr(0, 255, 0).MCvScalar);
