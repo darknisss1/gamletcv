@@ -1,11 +1,11 @@
 ﻿using System.Windows;
 using GamletCV.Windows;
 
-public class App : Application
+public class StartUp : Application
 {
     readonly MainWindow mainWindow;
  
-    public App(MainWindow mainWindow)
+    public StartUp(MainWindow mainWindow)
     {
         this.mainWindow = mainWindow;
     }

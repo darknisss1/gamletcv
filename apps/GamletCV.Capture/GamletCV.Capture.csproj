@@ -16,10 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Abstractions" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\GamletCV.Capture.Abstractions\GamletCV.Capture.Abstractions.csproj" />
     </ItemGroup>
 

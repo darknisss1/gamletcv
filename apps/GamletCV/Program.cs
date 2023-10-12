@@ -17,13 +17,13 @@ public class Program1
             // внедряем сервисы
             .ConfigureServices(services =>
             {
-                services.AddSingleton<App>();
+                services.AddSingleton<StartUp>();
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<IWebCamera, WebCamera>();
             })
             .Build();
-        // получаем сервис - объект класса App
-        var app = host.Services.GetService<App>();
+        // получаем сервис - объект класса StartUp
+        var app = host.Services.GetService<StartUp>();
         // запускаем приложения
         app?.Run();
     }
