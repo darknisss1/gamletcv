@@ -1,8 +1,9 @@
 ﻿using AForge.Video.DirectShow;
+using GamletCV.Capture.Abstractions;
 
 namespace GamletCV.Capture;
 
-public class WebCamera
+public class WebCamera : IWebCamera
 {
     // private FilterInfoCollection videoDevices; 
     //
@@ -66,4 +67,13 @@ public class WebCamera
     //         VideoSourcePlayer1.VideoSource = null;
     //     }
     // }
+    public IEnumerable<string> GetWebCameraCollection()
+    {
+        var filterInfoCollection = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+
+        foreach (FilterInfo filterInfo in filterInfoCollection)
+        {
+            yield return filterInfo.Name;
+        }
+    }
 }

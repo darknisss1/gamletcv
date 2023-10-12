@@ -15,4 +15,12 @@
       <PackageReference Include="Emgu.CV" Version="4.8.0.5324" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Abstractions" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GamletCV.Capture.Abstractions\GamletCV.Capture.Abstractions.csproj" />
+    </ItemGroup>
+
 </Project>
