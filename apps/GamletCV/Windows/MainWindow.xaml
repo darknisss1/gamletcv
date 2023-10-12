@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <StackPanel HorizontalAlignment="Left">
-        <Button Click="buttonGetWebCameraCollection">Get Web Camera List</Button>
-        <ComboBox Name="ComboBoxWebCamera"></ComboBox>
+        <ComboBox Name="ComboBoxCameraName" SelectionChanged="ComboBoxCameraNameSelectionChanged"></ComboBox>
+        <Button Click="ButtonStartCamera">Start</Button>
+        <Button Click="ButtonStopCamera">Stop</Button>
     </StackPanel>
 </Window>

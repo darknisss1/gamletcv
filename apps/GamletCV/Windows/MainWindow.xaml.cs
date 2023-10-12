@@ -1,36 +1,40 @@
 ﻿using System.Windows;
-using AForge.Video.DirectShow;
+using System.Windows.Controls;
 using GamletCV.Capture.Abstractions;
 
-namespace GamletCV.Windows
+namespace GamletCV.Windows;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    private readonly IWebCamera webCamera; 
+        
+    public MainWindow(IWebCamera webCamera)
     {
-        private readonly IWebCamera webCamera; 
-        public MainWindow(IWebCamera webCamera)
-        {
-            this.webCamera = webCamera;
-
-            InitializeComponent();
-        }
-        
-        
-        private void buttonGetWebCameraCollection(object sender, RoutedEventArgs e)
-        {
-            var videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+        this.webCamera = webCamera;
             
-            var webCameraCollection = webCamera.GetWebCameraCollection();
-
-            foreach (var webCamera in webCameraCollection)
-            {
-                ComboBoxWebCamera.Items.Add(webCamera);
-            }
+        InitializeComponent();
             
-            var b = 123;
-            // do something
+        foreach (var cameraName in this.webCamera.GetCameraNames())
+        {
+            ComboBoxCameraName.Items.Add(cameraName);
         }
+    }
+
+    private void ComboBoxCameraNameSelectionChanged(object sender, RoutedEventArgs e)
+    {
+        webCamera.SetCurrentCamera(((ComboBox)sender).SelectedValue.ToString());
+    }
+        
+    private void ButtonStartCamera(object sender, RoutedEventArgs e)
+    {
+        webCamera.Start();
+    }
+        
+    private void ButtonStopCamera(object sender, RoutedEventArgs e)
+    {
+        webCamera.Stop();
     }
 }

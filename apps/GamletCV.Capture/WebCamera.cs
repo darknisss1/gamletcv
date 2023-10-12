@@ -5,75 +5,61 @@ namespace GamletCV.Capture;
 
 public class WebCamera : IWebCamera
 {
-    // private FilterInfoCollection videoDevices; 
-    //
-    // private void EnumerateVideoDevices()
-    // {
-    //     // enumerate video devices
-    //     videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-    //     
-    //     if (videoDevices.Count != 0)
-    //     {
-    //         // add all devices to combo
-    //         foreach (FilterInfo device in videoDevices)
-    //             ComboBoxSources.Items.Add(device.Name);
-    //     }
-    //     else
-    //         ComboBoxSources.Items.Add("No DirectShow devices found");
-    //     ComboBoxSources.SelectedIndex = 0;
-    // }
-    //
-    // private void EnumerateVideoModes(VideoCaptureDevice device)
-    // {
-    //     // get resolutions for selected video source
-    //     this.Cursor = Cursors.WaitCursor;
-    //     ComboBoxModes.Items.Clear();
-    //     try
-    //     {
-    //         videoCapabilities = videoDevice.VideoCapabilities;
-    //         foreach (VideoCapabilities capabilty in videoCapabilities)
-    //         {
-    //             if (!ComboBoxModes.Items.Contains(capabilty.FrameSize))
-    //                 ComboBoxModes.Items.Add(capabilty.FrameSize);
-    //         }
-    //         if (videoCapabilities.Length == 0)
-    //             ComboBoxModes.Items.Add("Not supported");
-    //         ComboBoxModes.SelectedIndex = 0;
-    //     }
-    //     finally
-    //     {
-    //         this.Cursor = Cursors.Default;
-    //     }
-    // }
-    //
-    // private void CameraStart()
-    // {
-    //     if (videoDevice != null)
-    //     {
-    //         if ((videoCapabilities != null) && (videoCapabilities.Length != 0))
-    //             videoDevice.DesiredFrameSize = (Size)ComboBoxModes.SelectedItem;
-    //         VideoSourcePlayer1.VideoSource = videoDevice;
-    //         VideoSourcePlayer1.Start();
-    //     }
-    // }
-    //
-    // private void CameraStop()
-    // {
-    //     if (VideoSourcePlayer1.VideoSource != null)
-    //     {
-    //         // stop video device
-    //         VideoSourcePlayer1.SignalToStop();
-    //         VideoSourcePlayer1.WaitForStop();
-    //         VideoSourcePlayer1.VideoSource = null;
-    //     }
-    // }
-    public IEnumerable<string> GetWebCameraCollection()
+    private readonly FilterInfoCollection filterInfoCollection;
+    private VideoCaptureDevice camera;
+
+    public WebCamera()
     {
-        var filterInfoCollection = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+        filterInfoCollection = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+    }
+
+    public IEnumerable<string> GetCameraNames()
+    {
+        return from FilterInfo filterInfo in filterInfoCollection select filterInfo.Name;
+    }
+
+    public void SetCurrentCamera(string name)
+    {
+        camera?.Stop();
 
         foreach (FilterInfo filterInfo in filterInfoCollection)
         {
-            yield return filterInfo.Name;
+            if (filterInfo.Name != name)
+            {
+                continue;
+            }
+            
+            camera = new VideoCaptureDevice(filterInfo.MonikerString);
+                
+            return;
+        }
+
+        camera = null;
+    }
+
+    public void Start()
+    {
+        if (camera == null)
+        {
+            return;
+        }
+
+        if (!camera.IsRunning)
+        {
+            camera.Start();
+        }
+    }
+
+    public void Stop()
+    {
+        if (camera == null)
+        {
+            return;
+        }
+
+        if (camera.IsRunning)
+        {
+            camera.SignalToStop();
         }
     }
 }
