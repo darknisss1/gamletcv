@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamletCV", "apps\GamletCV\GamletCV.csproj", "{7F32B64F-6C80-4CF4-8861-30909CD55B4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamletCV.Application", "apps\GamletCV.Application\GamletCV.Application.csproj", "{7F32B64F-6C80-4CF4-8861-30909CD55B4F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{4CCDD529-4F9C-4673-9C17-92B0657D8BAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamletCV.Capture", "apps\GamletCV.Capture\GamletCV.Capture.csproj", "{B5EB81CC-B2E7-416A-AEAE-E7DCBA91CA61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamletCV.Services", "apps\GamletCV.Services\GamletCV.Services.csproj", "{B5EB81CC-B2E7-416A-AEAE-E7DCBA91CA61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamletCV.Capture.Abstractions", "apps\GamletCV.Capture.Abstractions\GamletCV.Capture.Abstractions.csproj", "{12F31DA9-369F-4336-B26B-D361253488F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamletCV.Services.Abstractions", "apps\GamletCV.Services.Abstractions\GamletCV.Services.Abstractions.csproj", "{12F31DA9-369F-4336-B26B-D361253488F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

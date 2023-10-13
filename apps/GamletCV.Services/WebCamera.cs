@@ -1,7 +1,7 @@
 ﻿using AForge.Video.DirectShow;
-using GamletCV.Capture.Abstractions;
+using GamletCV.Services.Abstractions;
 
-namespace GamletCV.Capture;
+namespace GamletCV.Services;
 
 public class WebCamera : IWebCamera
 {

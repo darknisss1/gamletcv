@@ -1,4 +1,4 @@
-﻿namespace GamletCV.Capture.Abstractions;
+﻿namespace GamletCV.Services.Abstractions;
 
 /// <summary>
 /// Работа с камерой

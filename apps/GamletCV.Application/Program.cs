@@ -1,13 +1,13 @@
 ﻿using System;
-using GamletCV.Capture;
-using GamletCV.Capture.Abstractions;
-using GamletCV.Windows;
+using GamletCV.Application.Pages;
+using GamletCV.Services;
+using GamletCV.Services.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace GamletCV;
+namespace GamletCV.Application;
 
-public class Program1
+public static class Program
 {
     [STAThread]
     public static void Main()

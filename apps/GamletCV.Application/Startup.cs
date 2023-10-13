@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using GamletCV.Windows;
+using GamletCV.Application.Pages;
 
 public class Startup : Application
 {
@@ -12,7 +12,7 @@ public class Startup : Application
     
     protected override void OnStartup(StartupEventArgs e)
     {
-        mainWindow.Show();  // отображаем главное окно на экране
+        mainWindow.Show();  
         
         base.OnStartup(e);
     }

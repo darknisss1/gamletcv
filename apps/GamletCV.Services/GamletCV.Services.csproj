@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\GamletCV.Capture.Abstractions\GamletCV.Capture.Abstractions.csproj" />
+      <ProjectReference Include="..\GamletCV.Services.Abstractions\GamletCV.Services.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

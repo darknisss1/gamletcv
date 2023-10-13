@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using GamletCV.Capture.Abstractions;
+using GamletCV.Services.Abstractions;
 
-namespace GamletCV.Windows;
+namespace GamletCV.Application.Pages;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
