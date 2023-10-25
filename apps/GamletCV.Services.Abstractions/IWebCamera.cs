@@ -1,4 +1,6 @@
-﻿namespace GamletCV.Services.Abstractions;
+﻿using System.Drawing;
+
+namespace GamletCV.Services.Abstractions;
 
 /// <summary>
 /// Работа с камерой
@@ -24,4 +26,5 @@ public interface IWebCamera
     /// Остановка камеры
     /// </summary>
     void Stop();
+    
 }

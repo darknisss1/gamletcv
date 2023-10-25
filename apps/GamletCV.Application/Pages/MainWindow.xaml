@@ -6,9 +6,17 @@
         xmlns:local="clr-namespace:GamletCV"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <StackPanel HorizontalAlignment="Left">
-        <ComboBox Name="ComboBoxCameraName" SelectionChanged="ComboBoxCameraNameSelectionChanged"></ComboBox>
-        <Button Click="ButtonStartCamera">Start</Button>
-        <Button Click="ButtonStopCamera">Stop</Button>
-    </StackPanel>
+    <Grid ShowGridLines="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.3*" ></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0" >
+            <ComboBox Name="ComboBoxCameraName" SelectionChanged="ComboBoxCameraNameSelectionChanged"></ComboBox>
+            <Button Click="ButtonStartCamera">Start</Button>
+            <Button Click="ButtonStopCamera">Stop</Button>
+            <Image></Image>
+        </StackPanel>
+        <Image Grid.Row="0" Grid.Column="1" Name="mainImage"></Image>
+    </Grid>
 </Window>
