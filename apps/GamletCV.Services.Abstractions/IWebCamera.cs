@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using GamletCV.Domain;
+﻿using GamletCV.Domain.Delegates;
 
 namespace GamletCV.Services.Abstractions;
 
@@ -28,7 +27,8 @@ public interface IWebCamera
     /// </summary>
     void Stop();
     
-    event SampleEventHandler SampleEvent;
-    
-    delegate void SampleEventHandler(object sender, SampleEventArgs e);
+    /// <summary>
+    /// Событие на каждый кадр камеры
+    /// </summary>
+    event WebCameraFrameEventHandler WebCameraFrameEvent;
 }

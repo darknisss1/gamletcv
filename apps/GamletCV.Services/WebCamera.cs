@@ -1,13 +1,8 @@
-﻿using System.Drawing;
-using AForge.Video;
-using AForge.Video.DirectShow;
+﻿using AForge.Video.DirectShow;
+using GamletCV.Domain.Delegates;
 using GamletCV.Services.Abstractions;
-using GamletCV.Domain;
-using static GamletCV.Services.Abstractions.IWebCamera;
 
 namespace GamletCV.Services;
-
-
 
 public class WebCamera : IWebCamera
 {
@@ -73,10 +68,10 @@ public class WebCamera : IWebCamera
         }
     }
 
-    public event SampleEventHandler SampleEvent;
+    public event WebCameraFrameEventHandler WebCameraFrameEvent;
 
-    public void NewFrame(object sender, NewFrameEventArgs eventArgs)
+    private void NewFrame(object sender, AForge.Video.NewFrameEventArgs eventArgs)
     {
-        SampleEvent?.Invoke(this, new SampleEventArgs(new Bitmap(eventArgs.Frame)));
+        WebCameraFrameEvent?.Invoke(this, new WebCameraFrameEventArgs(eventArgs.Frame));
     }
 }

@@ -16,6 +16,7 @@
         <PackageReference Include="AForge.Video.DirectShow" Version="2.2.5" />
         <PackageReference Include="Emgu.CV" Version="4.8.0.5324" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0-rc.2.23479.6" />
+        <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>

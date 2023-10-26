@@ -1,12 +1,7 @@
-﻿using System.Drawing;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using GamletCV.Domain;
+using GamletCV.Application.Mappers;
+using GamletCV.Domain.Delegates;
 using GamletCV.Services.Abstractions;
 
 namespace GamletCV.Application.Pages;
@@ -17,18 +12,16 @@ namespace GamletCV.Application.Pages;
 public partial class MainWindow : Window
 {
     private readonly IWebCamera webCamera; 
-    private Thread myUIthred;
  
     public MainWindow(IWebCamera webCamera)
     {
-        myUIthred = Thread.CurrentThread;
         this.webCamera = webCamera;
             
         InitializeComponent();
             
         foreach (var cameraName in this.webCamera.GetCameraNames())
         {
-            ComboBoxCameraName.Items.Add(cameraName);
+            СomboBoxCameraName.Items.Add(cameraName);
         }
     }
 
@@ -39,39 +32,22 @@ public partial class MainWindow : Window
         
     private void ButtonStartCamera(object sender, RoutedEventArgs e)
     {
-        webCamera.SampleEvent += WebCameraOnSampleEvent;
+        webCamera.WebCameraFrameEvent += WebCameraFrameEvent;
         webCamera.Start();
-    }
-
-    private void WebCameraOnSampleEvent(object sender, SampleEventArgs e)
-    {
-        if (Thread.CurrentThread != myUIthred) //Tell the UI thread to invoke me if its not him who is running me.
-        {
-            return;
-        }
-        
-        Task.Run(() => mainImage.Source = BitmapToImageSource(new Bitmap(e.Bitmap)));
+        ButtonStart.IsEnabled = false;
+        ButtonStop.IsEnabled = true;
     }
 
     private void ButtonStopCamera(object sender, RoutedEventArgs e)
     {
-        webCamera.SampleEvent -= WebCameraOnSampleEvent;
+        webCamera.WebCameraFrameEvent -= WebCameraFrameEvent;
         webCamera.Stop();
+        ButtonStart.IsEnabled = true;
+        ButtonStop.IsEnabled = false;
     }
-
-    private BitmapImage BitmapToImageSource(Bitmap bitmap)
+    
+    private void WebCameraFrameEvent(object sender, WebCameraFrameEventArgs e)
     {
-        using (var memory = new MemoryStream())
-        {
-            bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
-            memory.Position = 0;
-            var bitmapimage = new BitmapImage();
-            bitmapimage.BeginInit();
-            bitmapimage.StreamSource = memory;
-            bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapimage.EndInit();
-
-            return bitmapimage;
-        }
+        Dispatcher.Invoke(() => mainImage.Source = BitmapImageMapper.Map(e.Bitmap));
     }
 }
