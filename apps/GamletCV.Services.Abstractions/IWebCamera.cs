@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using GamletCV.Domain;
 
 namespace GamletCV.Services.Abstractions;
 
@@ -27,4 +28,7 @@ public interface IWebCamera
     /// </summary>
     void Stop();
     
+    event SampleEventHandler SampleEvent;
+    
+    delegate void SampleEventHandler(object sender, SampleEventArgs e);
 }
