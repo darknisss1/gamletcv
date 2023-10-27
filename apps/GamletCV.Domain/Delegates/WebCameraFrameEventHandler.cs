@@ -12,10 +12,7 @@ public delegate void WebCameraFrameEventHandler(object sender, WebCameraFrameEve
 /// </summary>
 public class WebCameraFrameEventArgs : EventArgs
 {
-    public WebCameraFrameEventArgs(Bitmap bitmap)
-    {
-        Bitmap = bitmap; 
-    }
-    
-    public Bitmap Bitmap { get; } // readonly
+    public Bitmap Bitmap { get; set; }
+
+    public bool IsMotion { get; set; }
 }

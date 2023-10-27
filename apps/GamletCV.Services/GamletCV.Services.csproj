@@ -12,6 +12,7 @@
       <PackageReference Include="AForge.Math" Version="2.2.5" />
       <PackageReference Include="AForge.Video" Version="2.2.5" />
       <PackageReference Include="AForge.Video.DirectShow" Version="2.2.5" />
+      <PackageReference Include="AForge.Vision" Version="2.2.5" />
       <PackageReference Include="Emgu.CV" Version="4.8.0.5324" />
       <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     </ItemGroup>

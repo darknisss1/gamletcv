@@ -14,7 +14,7 @@
             <ComboBox Name="СomboBoxCameraName" SelectionChanged="ComboBoxCameraNameSelectionChanged"></ComboBox>
             <Button Name="ButtonStart" Click="ButtonStartCamera">Start</Button>
             <Button Name="ButtonStop" Click="ButtonStopCamera">Stop</Button>
-            <Image></Image>
+            <CheckBox Name="CheckBoxIsMotion" IsEnabled="False">Движение</CheckBox>
         </StackPanel>
         <Image Grid.Row="0" Grid.Column="1" Name="mainImage"></Image>
     </Grid>

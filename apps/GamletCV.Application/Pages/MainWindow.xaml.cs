@@ -48,6 +48,10 @@ public partial class MainWindow : Window
     
     private void WebCameraFrameEvent(object sender, WebCameraFrameEventArgs e)
     {
-        Dispatcher.Invoke(() => mainImage.Source = BitmapImageMapper.Map(e.Bitmap));
+        Dispatcher.Invoke(() =>
+        {
+            CheckBoxIsMotion.IsChecked = e.IsMotion;
+            mainImage.Source = BitmapImageMapper.Map(e.Bitmap);
+        });
     }
 }

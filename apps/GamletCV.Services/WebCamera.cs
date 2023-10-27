@@ -1,5 +1,6 @@
 ﻿using AForge.Video;
 using AForge.Video.DirectShow;
+using AForge.Vision.Motion;
 using GamletCV.Domain.Delegates;
 using GamletCV.Services.Abstractions;
 
@@ -9,7 +10,10 @@ public class WebCamera : IWebCamera
 {
     private readonly FilterInfoCollection filterInfoCollection;
     private VideoCaptureDevice camera;
-
+    private readonly MotionDetector detector = new(
+        new TwoFramesDifferenceDetector(), 
+        new MotionAreaHighlighting());
+    
     public WebCamera()
     {
         filterInfoCollection = new FilterInfoCollection(FilterCategory.VideoInputDevice);
@@ -73,6 +77,10 @@ public class WebCamera : IWebCamera
 
     private void NewFrame(object sender, NewFrameEventArgs eventArgs)
     {
-        WebCameraFrameEvent?.Invoke(this, new WebCameraFrameEventArgs(eventArgs.Frame));
+        WebCameraFrameEvent?.Invoke(this, new WebCameraFrameEventArgs
+        {
+            IsMotion = detector.ProcessFrame(eventArgs.Frame) > 0.05,
+            Bitmap = eventArgs.Frame
+        });
     }
 }
