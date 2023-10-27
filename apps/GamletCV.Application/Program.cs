@@ -12,19 +12,15 @@ public static class Program
     [STAThread]
     public static void Main()
     {
-        // создаем хост приложения
-        var host = Host.CreateDefaultBuilder()
-            // внедряем сервисы
+        Host.CreateDefaultBuilder()
             .ConfigureServices(services =>
             {
                 services.AddSingleton<Startup>();
                 services.AddSingleton<MainWindow>();
                 services.AddSingleton<IWebCamera, WebCamera>();
             })
-            .Build();
-        // получаем сервис - объект класса Startup
-        var app = host.Services.GetService<Startup>();
-        // запускаем приложения
-        app?.Run();
+            .Build()
+            .Services.GetService<Startup>()?
+            .Run();
     }
 }
