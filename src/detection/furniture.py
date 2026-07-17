@@ -17,6 +17,10 @@ class BedZoneConfig:
     pad_x_ratio: float = 0.02
     wall_top_percent: float = 38.0
     hold_seconds: float = 4.0
+    expand_bbox: bool = True
+    bbox_grow_ratio: float = 0.0
+    pad_up_ratio: float = 0.08
+    headboard_lift_ratio: float = 0.0
 
 
 def bed_zone_config(det_cfg: dict) -> BedZoneConfig:
@@ -29,6 +33,10 @@ def bed_zone_config(det_cfg: dict) -> BedZoneConfig:
         hold_seconds=float(
             zone.get("hold_seconds", det_cfg.get("furniture_hold_seconds", 4))
         ),
+        expand_bbox=bool(zone.get("expand_bbox", True)),
+        bbox_grow_ratio=float(zone.get("bbox_grow_ratio", 0.0)),
+        pad_up_ratio=float(zone.get("pad_up_ratio", 0.08)),
+        headboard_lift_ratio=float(zone.get("headboard_lift_ratio", 0.0)),
     )
 
 
@@ -64,13 +72,56 @@ def expand_bed_zone(
         pad_up = int(h * cfg.headboard_up_ratio)
         pad_down = int(h * cfg.pad_down_ratio)
     else:
-        pad_up = int(h * 0.08)
+        pad_up = int(h * cfg.pad_up_ratio)
         pad_down = int(h * cfg.pad_down_ratio)
 
     x1 = max(0, x1 - pad_x)
     x2 = min(frame_w - 1, x2 + pad_x)
     y1 = max(wall_top, y1 - pad_up)
     y2 = min(frame_h - 1, y2 + pad_down)
+    return Detection(det.label, det.confidence, (x1, y1, x2, y2))
+
+
+def grow_bed_bbox(
+    det: Detection,
+    frame_w: int,
+    frame_h: int,
+    ratio: float,
+    wall_top_percent: float,
+) -> Detection:
+    """Равномерно расширить YOLO-рамку (подогнать под края дивана)."""
+    if ratio <= 0:
+        return det
+    x1, y1, x2, y2 = det.bbox
+    w, h = x2 - x1, y2 - y1
+    if w <= 0 or h <= 0:
+        return det
+    pad_x = int(w * ratio)
+    pad_y = int(h * ratio)
+    wall_top = int(frame_h * wall_top_percent / 100.0)
+    x1 = max(0, x1 - pad_x)
+    x2 = min(frame_w - 1, x2 + pad_x)
+    y1 = max(wall_top, y1 - pad_y)
+    y2 = min(frame_h - 1, y2 + pad_y)
+    return Detection(det.label, det.confidence, (x1, y1, x2, y2))
+
+
+def lift_headboard_if_flat(
+    det: Detection,
+    frame_w: int,
+    frame_h: int,
+    cfg: BedZoneConfig,
+) -> Detection:
+    """YOLO часто даёт узкую полосу матраса — после grow тянем вверх на спинку."""
+    lift = cfg.headboard_lift_ratio
+    if lift <= 0:
+        return det
+    x1, y1, x2, y2 = det.bbox
+    w, h = x2 - x1, y2 - y1
+    if w <= 0 or h <= 0 or h >= w * 0.45:
+        return det
+    wall_top = int(frame_h * cfg.wall_top_percent / 100.0)
+    y1 = max(wall_top, y1 - int(h * lift))
     return Detection(det.label, det.confidence, (x1, y1, x2, y2))
 
 
@@ -81,6 +132,13 @@ def expand_partial_furniture(
     cfg: BedZoneConfig,
 ) -> Detection:
     if det.label in ("bed", "couch", "mattress"):
+        if not cfg.expand_bbox:
+            return det
+        if cfg.bbox_grow_ratio > 0:
+            grown = grow_bed_bbox(
+                det, frame_w, frame_h, cfg.bbox_grow_ratio, cfg.wall_top_percent
+            )
+            return lift_headboard_if_flat(grown, frame_w, frame_h, cfg)
         return expand_bed_zone(det, frame_w, frame_h, cfg)
     return det
 

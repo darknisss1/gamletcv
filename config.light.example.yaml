@@ -1,25 +1,30 @@
+# Лёгкий профиль: меньше CPU (~15–30% одного ядра вместо 80–100%).
+# Скопируйте в config.light.yaml и подставьте camera/telegram из config.yaml:
+#   copy config.light.example.yaml config.light.yaml
+# Запуск:
+#   python watch.py --config config.light.yaml
+
 camera:
   host: ""
   onvif_port: null
   username: admin
   password: ""
-  rtsp_url: ""
+  # Substream 102 — меньше разрешение, быстрее декод (если нет потока — верните Channels/101)
+  rtsp_url: rtsp://USER:PASS@HOST:8554/Streaming/Channels/102
 
 detection:
-  yolo_model: yolo11s.pt
-  cat_confidence: 0.18
-  couch_confidence: 0.10
-  bed_confidence: 0.08
+  yolo_model: yolo11n.pt
+  cat_confidence: 0.15
+  couch_confidence: 0.08
+  bed_confidence: 0.06
   furniture_classes: [couch, bed]
   use_world_model: false
-  inference_width: 1280
+  inference_width: 640
   enhance_contrast: false
   fluffy_margin: 0.15
   cat_roi_enabled: true
   cat_roi_padding: 0.08
   furniture_check_seconds: 2
-  # Своя модель диван+матрас (после train_furniture.py):
-  # furniture_yolo_model: runs/furniture/train/weights/best.pt
   bed_zone:
     source: yolo
     expand_bbox: true
@@ -52,13 +57,13 @@ motion:
     max_center_drift: 180
   pixel_overlay_alpha: 0.5
   suppress_if_person: true
-  person_check_seconds: 5
+  person_check_seconds: 15
 
 runtime:
   show_preview: true
-  preview_max_width: 960
-  preview_fps: 10
-  rtsp_flush_grabs: 6
+  preview_max_width: 640
+  preview_fps: 5
+  rtsp_flush_grabs: 3
   save_snapshots: true
   snapshot_dir: snapshots
 

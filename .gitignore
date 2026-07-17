@@ -1,6 +1,7 @@
 # Секреты и локальные настройки
 config.yaml
 config.yolo.yaml
+config.light.yaml
 config.snapshot.yaml
 config.local.yaml
 *.local.yaml
@@ -11,7 +12,12 @@ secrets/
 # Модели и артефакты
 *.pt
 snapshots/
+runs/
+runs_furniture_train.log
 debug_frame.jpg
+debug_bed_check.jpg
+debug_bed_101.jpg
+debug_bed_trained.jpg
 dataset/
 
 # Python
