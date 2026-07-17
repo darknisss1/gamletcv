@@ -1,0 +1,27 @@
+# Секреты и локальные настройки
+config.yaml
+config.yolo.yaml
+config.snapshot.yaml
+config.local.yaml
+*.local.yaml
+.env
+.env.*
+secrets/
+
+# Модели и артефакты
+*.pt
+snapshots/
+debug_frame.jpg
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ONVIF-клон (тяжёлый, ставится отдельно)
+_onvif_repo/
+
+# IDE
+.idea/
+.vscode/

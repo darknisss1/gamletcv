@@ -1,0 +1,65 @@
+camera:
+  host: ""
+  onvif_port: null
+  username: admin
+  password: ""
+  rtsp_url: ""
+
+detection:
+  yolo_model: yolo11s.pt
+  cat_confidence: 0.18
+  couch_confidence: 0.10
+  bed_confidence: 0.08
+  furniture_classes: [couch, bed]
+  use_world_model: false
+  inference_width: 960
+  enhance_contrast: false
+  fluffy_margin: 0.15
+  furniture_check_seconds: 2
+  bed_zone:
+    source: yolo
+    # python calibrate_bed.py → source: manual + manual: [x1, y1, x2, y2]
+    headboard_up_ratio: 1.15
+    pad_down_ratio: 0.12
+    pad_x_ratio: 0.02
+    wall_top_percent: 38
+    hold_seconds: 30
+    check_interval_seconds: 2
+
+motion:
+  alert_mode: hybrid
+  threshold: 22
+  min_blob_area: 1200
+  max_blob_area: 200000
+  min_bed_overlap: 0.35
+  warmup_frames: 25
+  erode_iter: 1
+  dilate_iter: 2
+  stable_frames: 2
+  min_cat_motion_overlap: 0.10
+  cat_on_bed_overlap: 0.15
+  cat_lock:
+    enabled: true
+    release_frames: 8
+    grace_frames: 2
+    match_iou: 0.15
+    max_center_drift: 180
+  pixel_overlay_alpha: 0.5
+  suppress_if_person: true
+  person_check_seconds: 5
+
+runtime:
+  show_preview: true
+  preview_max_width: 960
+  preview_fps: 10
+  rtsp_flush_grabs: 6
+  save_snapshots: true
+  snapshot_dir: snapshots
+
+alert:
+  cooldown_seconds: 10
+  beep: true
+  telegram:
+    enabled: false
+    bot_token: ""
+    chat_id: ""
