@@ -47,13 +47,28 @@ EKF SCWF-USB  →  ONVIF (SOAP)  →  RTSP URL  →  OpenCV/FFmpeg  →  YOLO/VL
 | Скрипт | Режим |
 |--------|--------|
 | `python watch.py` | **Движение кота** на статичной кровати (motion + YOLO cat) |
+| `python watch.py --config config.light.yaml` | То же, **лёгкий профиль** (nano YOLO, 5 fps, substream) |
 | `python watch_yolo.py` | Только YOLO: кот + кровать, без motion (откат) |
 | `python record_dataset.py` | Сбор кадров для дообучения (`s` кот, `n` без кота) |
 
 ```bash
+copy config.light.example.yaml config.light.yaml
+# подставьте rtsp_url, telegram и manual bed из config.yaml
+python watch.py --config config.light.yaml
+
 python watch_yolo.py --config config.yolo.yaml
 python record_dataset.py --out dataset/images
 ```
+
+### Лёгкий профиль (мало CPU)
+
+`config.light.example.yaml` → `config.light.yaml`: `yolo11n.pt`, `inference_width: 640`, `preview_fps: 5`, RTSP **Channels/102** (substream), **диван — YOLO** (`bed_zone.source: yolo`). Если substream не открывается — смените на `101`.
+
+**Самопроверка рамки дивана:** `python scripts/check_bed_bbox.py --config config.light.yaml` → `debug_bed_check.jpg`. Сводка: [`STATUS.md`](STATUS.md).
+
+### Точность дивана (своя модель)
+
+Дообучение под вашу комнату: [`docs/FURNITURE_AGENT.md`](docs/FURNITURE_AGENT.md) — агент может собрать кадры, вы размечаете рамки, `train_furniture.py` → `furniture_yolo_model` в config.
 
 ### Точность кота
 

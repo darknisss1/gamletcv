@@ -16,6 +16,7 @@ from src.alert.notify import Alerter
 from src.camera.ekf import open_capture, resolve_stream
 from src.detection.bed_zone_io import manual_bed_bbox, use_manual_bed
 from src.detection.furniture import FurnitureTracker, bed_zone_config
+from src.detection.furniture_yolo import FurnitureYoloDetector
 from src.detection.cat_lock import CatLockTracker
 from src.detection.motion import (
     BedMotionDetector,
@@ -219,6 +220,14 @@ def main() -> int:
         use_world_model=bool(det_cfg.get("use_world_model", False)),
         enhance=bool(det_cfg.get("enhance_contrast", False)),
     )
+    furniture_model_path = det_cfg.get("furniture_yolo_model") or ""
+    furniture_detector: FurnitureYoloDetector | None = None
+    if furniture_model_path:
+        furniture_detector = FurnitureYoloDetector(
+            str(furniture_model_path),
+            inference_width=int(det_cfg.get("inference_width", 960)),
+        )
+        logger.info("Диван/матрас: своя модель %s", furniture_model_path)
 
     bed_cfg = bed_zone_config(det_cfg)
     bed_tracker = FurnitureTracker(bed_cfg)
@@ -328,17 +337,28 @@ def main() -> int:
                 not bed_tracker.ready or (now - last_bed_check) >= bed_check_sec
             )
             if need_bed:
-                dets = detector.detect(
-                    frame, cat_conf=0.99, couch_conf=couch_conf, bed_conf=bed_conf
-                )
+                if furniture_detector is not None:
+                    couches = furniture_detector.detect(
+                        frame, min_conf=min(couch_conf, bed_conf)
+                    )
+                    bed_tracker.update(couches, fw, fh)
+                    sleepers = [
+                        (c.label, round(c.confidence, 2))
+                        for c in couches
+                        if c.label in ("bed", "couch", "mattress")
+                    ]
+                else:
+                    dets = detector.detect(
+                        frame, cat_conf=0.99, couch_conf=couch_conf, bed_conf=bed_conf
+                    )
+                    bed_tracker.update(dets.couches, fw, fh)
+                    sleepers = [
+                        (c.label, round(c.confidence, 2))
+                        for c in dets.couches
+                        if c.label in ("bed", "couch", "mattress")
+                    ]
                 before = bed_tracker.bbox
-                bed_tracker.update(dets.couches, fw, fh)
                 last_bed_check = now
-                sleepers = [
-                    (c.label, round(c.confidence, 2))
-                    for c in dets.couches
-                    if c.label in ("bed", "couch", "mattress")
-                ]
                 if bed_tracker.bbox != before or not before:
                     logger.info(
                         "Кровать: picked=%s bbox=%s candidates=%s",

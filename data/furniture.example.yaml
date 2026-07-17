@@ -1,0 +1,8 @@
+# Скопируйте в data/furniture.yaml и поправьте path при необходимости.
+path: dataset/furniture
+train: images/train
+val: images/val
+
+names:
+  0: daybed
+  1: mattress
