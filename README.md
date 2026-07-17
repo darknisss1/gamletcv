@@ -48,19 +48,25 @@ EKF SCWF-USB  →  ONVIF (SOAP)  →  RTSP URL  →  OpenCV/FFmpeg  →  YOLO/VL
 |--------|--------|
 | `python watch.py` | **Движение кота** на статичной кровати (motion + YOLO cat) |
 | `python watch_yolo.py` | Только YOLO: кот + кровать, без motion (откат) |
+| `python record_dataset.py` | Сбор кадров для дообучения (`s` кот, `n` без кота) |
 
 ```bash
 python watch_yolo.py --config config.yolo.yaml
+python record_dataset.py --out dataset/images
 ```
 
-## Быстрый старт
+### Точность кота
+
+- `detection.cat_roi_enabled: true` — YOLO только по crop зоны кровати (рекомендуется).
+- `detection.inference_width: 1280` + `enhance_contrast: true` — для белого пушистого кота.
+- Соберите 300+ кадров (`record_dataset.py`), разметьте в Roboflow/CVAT, fine-tune `yolo11s.pt`.
 
 ```bash
-cd cat-couch-guard
+cd gamletcv
 pip install -r requirements.txt
 copy config.example.yaml config.yaml
-# отредактируйте config.yaml или передайте аргументы
-python discover.py --host 192.168.1.XXX --password ВАШ_ПАРОЛЬ
+python calibrate_bed.py
+python watch.py
 ```
 
 ## Рекомендации для EKF SCWF-USB

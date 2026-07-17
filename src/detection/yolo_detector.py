@@ -8,7 +8,8 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 
-from src.detection.on_couch import Detection
+from src.detection.on_couch import BBox, Detection
+from src.detection.roi import bed_roi_from_bbox, crop_frame, shift_detections
 
 CAT_CLASS = 15
 PERSON_CLASS = 0
@@ -133,3 +134,19 @@ class YoloDetector:
             infer_ms += float((furn_result.speed or {}).get("inference", 0.0))
 
         return FrameDetections(cats=cats, couches=couches, persons=persons, inference_ms=infer_ms)
+
+    def detect_cats_in_bed(
+        self,
+        frame: np.ndarray,
+        bed: BBox,
+        cat_conf: float,
+        roi_padding: float = 0.08,
+    ) -> tuple[list[Detection], float]:
+        """YOLO только по crop зоны кровати — кот крупнее, меньше ложных срабатываний."""
+        h, w = frame.shape[:2]
+        roi = bed_roi_from_bbox(bed, w, h, roi_padding)
+        crop = crop_frame(frame, roi)
+        if crop.size == 0:
+            return [], 0.0
+        dets = self.detect(crop, cat_conf=cat_conf, couch_conf=0.99, bed_conf=0.99)
+        return shift_detections(dets.cats, roi), dets.inference_ms

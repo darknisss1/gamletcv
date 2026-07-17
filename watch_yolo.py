@@ -22,7 +22,13 @@ from src.camera.ekf import open_capture, resolve_stream
 from src.detection.bed_zone_io import manual_bed_bbox, use_manual_bed
 from src.detection.furniture import FurnitureTracker, bed_zone_config
 from src.detection.on_couch import Detection, find_violations
-from src.detection.yolo_detector import DEFAULT_FURNITURE_NAMES, FURNITURE_CLASSES, YoloDetector
+from src.detection.roi import is_frame_valid
+from src.detection.yolo_detector import (
+    DEFAULT_FURNITURE_NAMES,
+    FURNITURE_CLASSES,
+    FrameDetections,
+    YoloDetector,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -165,6 +171,8 @@ def main() -> int:
     min_overlap = float(det_cfg.get("overlap_ratio", 0.18))
     fluffy_margin = float(det_cfg.get("fluffy_margin", 0.15))
     cat_conf = float(det_cfg.get("cat_confidence", 0.18))
+    cat_roi_enabled = bool(det_cfg.get("cat_roi_enabled", True))
+    cat_roi_padding = float(det_cfg.get("cat_roi_padding", 0.08))
     couch_conf = float(det_cfg.get("couch_confidence", 0.10))
     bed_conf = float(det_cfg.get("bed_confidence", couch_conf))
     check_interval = float(det_cfg.get("check_interval_seconds", 1.5))
@@ -217,17 +225,28 @@ def main() -> int:
                 cap = open_capture(stream.rtsp_url)
                 stable_count = 0
                 continue
+            if not is_frame_valid(frame):
+                continue
 
             frame_no += 1
 
             if need_check:
                 last_check_at = now
-                last_dets = detector.detect(frame, cat_conf, couch_conf, bed_conf=bed_conf)
                 fh, fw = frame.shape[:2]
                 if manual_mode:
                     last_couches = manual_couch
                 else:
-                    last_couches = furniture_tracker.update(last_dets.couches, fw, fh)
+                    full_dets = detector.detect(frame, 0.99, couch_conf, bed_conf=bed_conf)
+                    last_couches = furniture_tracker.update(full_dets.couches, fw, fh)
+
+                bed_bbox = last_couches[0].bbox if last_couches else None
+                if cat_roi_enabled and bed_bbox:
+                    cats, infer_ms = detector.detect_cats_in_bed(
+                        frame, bed_bbox, cat_conf, cat_roi_padding
+                    )
+                    last_dets = FrameDetections(cats=cats, couches=[], persons=[], inference_ms=infer_ms)
+                else:
+                    last_dets = detector.detect(frame, cat_conf, couch_conf, bed_conf=bed_conf)
                 last_violations = find_violations(
                     last_dets.cats,
                     last_couches,

@@ -12,6 +12,7 @@ secrets/
 *.pt
 snapshots/
 debug_frame.jpg
+dataset/
 
 # Python
 __pycache__/
