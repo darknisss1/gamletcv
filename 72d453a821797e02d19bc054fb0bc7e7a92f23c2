@@ -1,0 +1,52 @@
+.gitignore
+  5eeed75c51ff4513 4,15-16,18-20
+config.example.yaml
+  5eeed75c51ff4513 21-22,25-27
+config.light.example.yaml
+  5eeed75c51ff4513 1-76
+data/furniture.example.yaml
+  5eeed75c51ff4513 1-8
+docs/FURNITURE_AGENT.md
+  5eeed75c51ff4513 1-52
+label_furniture.py
+  5eeed75c51ff4513 1-95
+README.md
+  5eeed75c51ff4513 67-72
+scripts/build_furniture_dataset.py
+  5eeed75c51ff4513 1-204
+scripts/check_bed_bbox.py
+  5eeed75c51ff4513 1-120
+scripts/collect_bed_frames.py
+  5eeed75c51ff4513 1-79
+src/detection/furniture_yolo.py
+  5eeed75c51ff4513 1-56
+src/detection/furniture.py
+  5eeed75c51ff4513 20-23,36-39,75,85-127,135-141
+STATUS.md
+  5eeed75c51ff4513 1-29
+train_furniture.py
+  5eeed75c51ff4513 1-45,47-48
+watch.py
+  5eeed75c51ff4513 19,223-230,340-349,352-359
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "git-ai-lite-1.0.0",
+  "base_commit_sha": "599d7c81303b874ae9bd7e486d35110ef6890500",
+  "prompts": {
+    "5eeed75c51ff4513": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "4e7dee23-cf75-4340-ae0c-4c74b9e890a6",
+        "model": "composer-2.5"
+      },
+      "human_author": "egor.lynnik <lynnik@moedelo.org>",
+      "messages": [],
+      "total_additions": 1322,
+      "total_deletions": 101,
+      "accepted_lines": 869,
+      "accepted_deletions": 3,
+      "overridden_lines": 453
+    }
+  }
+}
