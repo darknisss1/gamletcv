@@ -12,9 +12,11 @@ detection:
   bed_confidence: 0.08
   furniture_classes: [couch, bed]
   use_world_model: false
-  inference_width: 960
+  inference_width: 1280
   enhance_contrast: false
   fluffy_margin: 0.15
+  cat_roi_enabled: true
+  cat_roi_padding: 0.08
   furniture_check_seconds: 2
   bed_zone:
     source: yolo

@@ -23,6 +23,7 @@ from src.detection.motion import (
     find_cat_on_bed,
     person_on_bed,
 )
+from src.detection.roi import is_frame_valid
 from src.detection.yolo_detector import FURNITURE_CLASSES, YoloDetector
 
 logging.basicConfig(
@@ -208,6 +209,8 @@ def main() -> int:
     couch_conf = float(det_cfg.get("couch_confidence", 0.10))
     bed_conf = float(det_cfg.get("bed_confidence", couch_conf))
     cat_conf = float(det_cfg.get("cat_confidence", 0.18))
+    cat_roi_enabled = bool(det_cfg.get("cat_roi_enabled", True))
+    cat_roi_padding = float(det_cfg.get("cat_roi_padding", 0.08))
     flush_grabs = int(rt_cfg.get("rtsp_flush_grabs", 6))
     detector = YoloDetector(
         det_cfg.get("yolo_model", "yolo11s.pt"),
@@ -291,10 +294,11 @@ def main() -> int:
     person_nearby = False
 
     logger.info(
-        "Режим: зона %s, алерт=%s, удержание кота=%s.",
+        "Режим: зона %s, алерт=%s, lock=%s, cat ROI=%s.",
         "ручная" if manual_mode else "YOLO",
         alert_mode,
         "да" if cat_lock_enabled else "нет",
+        "да" if cat_roi_enabled else "нет",
     )
 
     try:
@@ -313,6 +317,8 @@ def main() -> int:
                 motion.reset()
                 cat_lock.reset()
                 stable = 0
+                continue
+            if not is_frame_valid(frame):
                 continue
 
             last_preview_at = now
@@ -379,8 +385,14 @@ def main() -> int:
                 or result.moving
                 or cat_lock.locked
             ):
-                dets = detector.detect(frame, cat_conf, couch_conf, bed_conf=bed_conf)
-                last_cats = dets.cats
+                bed_bbox = bed_tracker.bbox  # type: ignore[assignment]
+                if cat_roi_enabled and bed_bbox:
+                    last_cats, _ = detector.detect_cats_in_bed(
+                        frame, bed_bbox, cat_conf, cat_roi_padding
+                    )
+                else:
+                    dets = detector.detect(frame, cat_conf, couch_conf, bed_conf=bed_conf)
+                    last_cats = dets.cats
                 frame_size = (fw, fh)
 
                 if alert_mode in ("hybrid", "cat_on_bed"):
